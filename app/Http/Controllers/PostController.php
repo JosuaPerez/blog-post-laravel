@@ -22,33 +22,4 @@ class PostController extends Controller
             'post' => $post,
         ]);
     }
-
-    public function create()
-    {
-        return view('posts.create');
-    }
-
-    public function store()
-    {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'thumbnail' => 'required|image',
-            'slug' => ['required', Rule::unique('posts', 'slug')],
-            'excerpt' => 'required',
-            'body' => 'required',
-            'category_id' => ['required', Rule::exists('categories', 'id')]
-        ]);
-
-        $attributes['user_id'] = auth()->id();
-
-        $fileName = time() . request()->file('thumbnail')->getClientOriginalName();
-
-        $path = request()->file('thumbnail')->storeAs('thumbnails', $fileName, 'public');
-
-        $attributes["thumbnail"] = $path;
-
-        Post::create($attributes);
-
-        return redirect('/');
-    }
 }

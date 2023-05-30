@@ -28,7 +28,8 @@
                         <a class="text-xs font-bold uppercase">Welcome, {{ auth()->user()->name }}!</a>
                     </x-slot>
 
-                    <x-dropdown-item href="/admin/dashboard">Dashboard</x-dropdown-item>
+                    <x-dropdown-item href="/admin/posts" :active="request()->is('admin/posts')">Dashboard
+                    </x-dropdown-item>
 
                     <x-dropdown-item
                         href="/admin/posts/create"

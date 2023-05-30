@@ -1,5 +1,5 @@
 <x-layout>
-    <x-publish-new-post heading="Publish New Post">
+    <x-setting heading="Publish New Post">
         <form method="POST" action="/admin/posts" enctype="multipart/form-data">
             @csrf
 
@@ -34,5 +34,5 @@
                 </x-form.button>
             </div>
         </form>
-    </x-publish-new-post>
+    </x-setting>
 </x-layout>
