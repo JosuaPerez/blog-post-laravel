@@ -3,7 +3,7 @@
 <x-panel class="bg-gray-50">
     <article class="flex space-x-4">
         <div class="flex-shrink-0">
-            <img src="https://i.pravatar.cc/60?id={{ $comment->user_id }}" alt="" class="rounded-xl">
+            <img src="https://i.pravatar.cc/60?id={{ $comment->user_id }}" alt="profile photo" class="rounded-xl">
         </div>
 
         <div>
