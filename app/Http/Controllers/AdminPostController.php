@@ -21,21 +21,11 @@ class AdminPostController extends Controller
 
     public function store()
     {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'thumbnail' => 'required|image',
-            'slug' => ['required', Rule::unique('posts', 'slug')],
-            'excerpt' => 'required',
-            'body' => 'required',
-            'category_id' => ['required', Rule::exists('categories', 'id')]
-        ]);
+        $attributes = $this->validatePost(new Post());
 
         $attributes['user_id'] = auth()->id();
-
         $fileName = time() . request()->file('thumbnail')->getClientOriginalName();
-
         $path = request()->file('thumbnail')->storeAs('thumbnails', $fileName, 'public');
-
         $attributes["thumbnail"] = $path;
 
         Post::create($attributes);
@@ -52,16 +42,9 @@ class AdminPostController extends Controller
 
     public function update(Post $post)
     {
-        $attributes = request()->validate([
-            'title' => 'required',
-            'thumbnail' => 'image',
-            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post->id)],
-            'excerpt' => 'required',
-            'body' => 'required',
-            'category_id' => ['required', Rule::exists('categories', 'id')]
-        ]);
+        $attributes = $this->validatePost($post);
 
-        if (isset($attributes['thumbnail'])) {
+        if ($attributes['thumbnail'] ?? false) {
             $fileName = time() . request()->file('thumbnail')->getClientOriginalName();
 
             $path = request()->file('thumbnail')->storeAs('thumbnails', $fileName, 'public');
@@ -79,5 +62,23 @@ class AdminPostController extends Controller
         $post->delete();
 
         return back()->with('success', 'Post Deleted!');
+    }
+
+    /**
+     * @param Post|null $post
+     * @return array
+     */
+    protected function validatePost(?Post $post = null): array
+    {
+        $post ??= new Post();
+
+        return request()->validate([
+            'title' => 'required',
+            'thumbnail' => $post->exists ? ['image'] : ['required', 'image'],
+            'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post)],
+            'excerpt' => 'required',
+            'body' => 'required',
+            'category_id' => ['required', Rule::exists('categories', 'id')]
+        ]);
     }
 }
